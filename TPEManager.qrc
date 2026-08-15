@@ -1,0 +1,21 @@
+<RCC>
+    <qresource>
+        <file>Components/BaseButton.qml</file>
+        <file>Components/ComboEntry.qml</file>
+        <file>Components/DangerButton.qml</file>
+        <file>Components/DateEntry.qml</file>
+        <file>Components/Entry.qml</file>
+        <file>Components/MoneyEntry.qml</file>
+        <file>Components/OperationsTable.qml</file>
+        <file>Components/PrimaryButton.qml</file>
+        <file>Components/SecondaryButton.qml</file>
+        <file>Components/StatCard.qml</file>
+        <file>Components/Theme.qml</file>
+        <file>Main.qml</file>
+        <file>MainBackup.qml</file>
+        <file>MainForm.ui.qml</file>
+        <file>TPEManager.qmlproject</file>
+        <file>Transaction.ui.qml</file>
+        <file>qtquickcontrols2.conf</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,26 @@
+import QmlProject
+
+Project {
+    mainFile: "Main.qml"
+
+    QmlFiles {
+        directory: "."
+    }
+
+    ImageFiles {
+        directory: "assets"
+    }
+
+    Files {
+        filter: "*.conf"
+        files: ["qtquickcontrols2.conf"]
+    }
+
+    Environment {
+        QT_QUICK_CONTROLS_CONF: "qtquickcontrols2.conf"
+        QT_AUTO_SCREEN_SCALE_FACTOR: "1"
+    }
+
+    qt6Project: true
+    qdsVersion: "4.8"
+}
