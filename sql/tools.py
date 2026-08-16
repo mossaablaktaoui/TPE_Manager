@@ -47,7 +47,7 @@ def create_db(cursor):
     with open("sql/requetes.sql", "r") as file:
         sql_script = file.read()
 
-    cursor.execute(sql_script)
+    cursor.executescript(sql_script)
 
 
 def export_db():

@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS operations (
     numero_facture INTEGER,
     montant DECIMAL(10, 3) NOT NULL,
     montant_verse DECIMAL(10, 3) NOT NULL DEFAULT 0,
-    montant_deducti ble DECIMAL(10, 3) NOT NULL DEFAULT 0,
+    montant_deductible DECIMAL(10, 3) NOT NULL DEFAULT 0,
     commission_CMI DECIMAL(10, 3) NOT NULL DEFAULT 0,
     benefice DECIMAL(10, 3) NOT NULL DEFAULT 0,
     benefice_supplementaire DECIMAL(10, 3) NOT NULL DEFAULT 0,

@@ -25,7 +25,10 @@ class MainWindowModel:
                   AND supprime = 0
                 ORDER BY date ASC, time ASC, id ASC
                 """, (date_debut, date_fin, operation_type))
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        return [list(row) for row in result]
+
+
 
     @Slot(str, str, int, int, float, float, float, float, float, float, float, float)
     @staticmethod
@@ -136,7 +139,6 @@ class MainWindowModel:
                   operation_id))
         if operation_type == 0:
             MainWindowModel.remplir_bilan_quotidienne(date, numero_facture)
-        return cursor.lastrowid
         return cursor.rowcount
 
     @Slot(str, int)
@@ -205,7 +207,8 @@ class MainWindowModel:
         cursor.execute(""" SELECT * FROM bilan_quotidien 
                            WHERE date BETWEEN ? AND ?
                            """,(date_debut, date_fin))
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        return [list(row) for row in result]
 
     @Slot(int)
     @staticmethod
