@@ -1,5 +1,7 @@
 <RCC>
     <qresource>
+        <file>TPEManager.qmlproject</file>
+        <file>qtquickcontrols2.conf</file>
         <file>ui/Components/BaseButton.qml</file>
         <file>ui/Components/ComboEntry.qml</file>
         <file>ui/Components/DangerButton.qml</file>
@@ -14,8 +16,7 @@
         <file>ui/main_window/Main.qml</file>
         <file>ui/main_window/MainBackup.qml</file>
         <file>ui/main_window/MainForm.ui.qml</file>
+        <file>ui/main_window/Operation.qml</file>
         <file>ui/main_window/Operation.ui.qml</file>
-        <file>TPEManager.qmlproject</file>
-        <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

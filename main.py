@@ -5,18 +5,20 @@ from PySide6.QtCore import QUrl
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
+from ui.main_window.model import MainWindowModel
+
 
 def main():
     app = QGuiApplication(sys.argv)
-
     engine = QQmlApplicationEngine()
-
     qml_file = Path(__file__).parent / "ui/main_window/Main.qml"
-
     engine.load(QUrl.fromLocalFile(qml_file))
 
     if not engine.rootObjects():
-        sys.exit(-1)
+        raise RuntimeError(f"Failed to load QML root object: {qml_file}")
+
+    root = engine.rootObjects()[0]
+    root.setProperty("model", MainWindowModel())
 
     sys.exit(app.exec())
 

@@ -1,10 +1,18 @@
 import sqlite3
 from functools import wraps
 from pathlib import Path
-from tkinter import Tk, filedialog
-from tkinter import messagebox
 import shutil
-from pathlib import Path
+
+
+def get_tk_modules():
+    try:
+        from tkinter import Tk, filedialog, messagebox
+    except ImportError as exc:
+        raise RuntimeError(
+            "Tkinter is not available on this system. Install Tk support or avoid import/export features."
+        ) from exc
+
+    return Tk, filedialog, messagebox
 
 
 
@@ -43,6 +51,7 @@ def create_db(cursor):
 
 
 def export_db():
+    Tk, filedialog, _ = get_tk_modules()
     root = Tk()
     root.withdraw()
 
@@ -63,6 +72,7 @@ def export_db():
 @db_connection
 def importe_db(cursor):
     destination = Path("sql/bdd.db")
+    Tk, filedialog, messagebox = get_tk_modules()
     root = Tk()
     root.withdraw()
 
