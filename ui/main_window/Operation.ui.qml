@@ -2,13 +2,17 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "Components"
+import "../Components"
 
 Item {
     id: root
 
     implicitWidth: 1000
     implicitHeight: 700
+
+    Theme {
+        id: theme
+    }
 
     property alias previousDayButton: previousDayButton
     property alias fromDate: fromDate

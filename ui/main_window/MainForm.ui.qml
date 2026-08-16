@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "Components"
+import "../Components"
 
 Item {
     id: root
@@ -10,17 +10,17 @@ Item {
     height: 900
 
     // Controls exported to Main.qml. The UI file contains presentation only.
-    property alias previousDayButton: previousDayButton
-    property alias fromDate: fromDate
-    property alias toDate: toDate
-    property alias nextDayButton: nextDayButton
-    property alias todayButton: todayButton
-    property alias newOperationButton: newOperationButton
+    property alias previousDayButton: operationPage.previousDayButton
+    property alias fromDate: operationPage.fromDate
+    property alias toDate: operationPage.toDate
+    property alias nextDayButton: operationPage.nextDayButton
+    property alias todayButton: operationPage.todayButton
+    property alias newOperationButton: operationPage.newOperationButton
 
-    property alias modifyButton: modifyButton
-    property alias duplicateButton: duplicateButton
-    property alias deleteButton: deleteButton
-    property alias operationsTable: operationsTable
+    property alias modifyButton: operationPage.modifyButton
+    property alias duplicateButton: operationPage.duplicateButton
+    property alias deleteButton: operationPage.deleteButton
+    property alias operationsTable: operationPage.operationsTable
 
     property alias editorTitle: editorTitle
     property alias dateTimeField: dateTimeField
@@ -39,11 +39,11 @@ Item {
     property alias cancelButton: cancelButton
     property alias saveButton: saveButton
 
-    property alias currentBalanceCard: currentBalanceCard
-    property alias totalOperationsCard: totalOperationsCard
-    property alias totalPaidCard: totalPaidCard
-    property alias profitCard: profitCard
-    property alias extraProfitCard: extraProfitCard
+    property alias currentBalanceCard: operationPage.currentBalanceCard
+    property alias totalOperationsCard: operationPage.totalOperationsCard
+    property alias totalPaidCard: operationPage.totalPaidCard
+    property alias profitCard: operationPage.profitCard
+    property alias extraProfitCard: operationPage.extraProfitCard
 
     Theme {
         id: theme

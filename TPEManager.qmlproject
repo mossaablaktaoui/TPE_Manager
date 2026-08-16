@@ -1,10 +1,10 @@
 import QmlProject
 
 Project {
-    mainFile: "Main.qml"
+    mainFile: "ui/main_window/Main.qml"
 
     QmlFiles {
-        directory: "."
+        directory: "ui"
     }
 
     ImageFiles {
@@ -24,5 +24,5 @@ Project {
     qt6Project: true
     qdsVersion: "4.8"
 
-    mainUiFile: "Operation.ui.qml"
+    mainUiFile: "ui/main_window/Operation.ui.qml"
 }

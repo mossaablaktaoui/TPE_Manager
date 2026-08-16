@@ -5,14 +5,13 @@ from PySide6.QtCore import QUrl
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
-from controller import AppController
 
 def main():
     app = QGuiApplication(sys.argv)
 
     engine = QQmlApplicationEngine()
 
-    qml_file = Path(__file__).parent / "Main.qml"
+    qml_file = Path(__file__).parent / "ui/main_window/Main.qml"
 
     engine.load(QUrl.fromLocalFile(qml_file))
 

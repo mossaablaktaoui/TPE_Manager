@@ -1,20 +1,20 @@
 <RCC>
     <qresource>
-        <file>Components/BaseButton.qml</file>
-        <file>Components/ComboEntry.qml</file>
-        <file>Components/DangerButton.qml</file>
-        <file>Components/DateEntry.qml</file>
-        <file>Components/Entry.qml</file>
-        <file>Components/MoneyEntry.qml</file>
-        <file>Components/OperationsTable.qml</file>
-        <file>Components/PrimaryButton.qml</file>
-        <file>Components/SecondaryButton.qml</file>
-        <file>Components/StatCard.qml</file>
-        <file>Components/Theme.qml</file>
-        <file>Main.qml</file>
-        <file>MainBackup.qml</file>
-        <file>MainForm.ui.qml</file>
-        <file>Operations.ui.qml</file>
+        <file>ui/Components/BaseButton.qml</file>
+        <file>ui/Components/ComboEntry.qml</file>
+        <file>ui/Components/DangerButton.qml</file>
+        <file>ui/Components/DateEntry.qml</file>
+        <file>ui/Components/Entry.qml</file>
+        <file>ui/Components/MoneyEntry.qml</file>
+        <file>ui/Components/OperationsTable.qml</file>
+        <file>ui/Components/PrimaryButton.qml</file>
+        <file>ui/Components/SecondaryButton.qml</file>
+        <file>ui/Components/StatCard.qml</file>
+        <file>ui/Components/Theme.qml</file>
+        <file>ui/main_window/Main.qml</file>
+        <file>ui/main_window/MainBackup.qml</file>
+        <file>ui/main_window/MainForm.ui.qml</file>
+        <file>ui/main_window/Operation.ui.qml</file>
         <file>TPEManager.qmlproject</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
