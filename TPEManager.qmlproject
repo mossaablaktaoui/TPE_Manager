@@ -23,4 +23,6 @@ Project {
 
     qt6Project: true
     qdsVersion: "4.8"
+
+    mainUiFile: "Operation.ui.qml"
 }

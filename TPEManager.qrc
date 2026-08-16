@@ -14,8 +14,8 @@
         <file>Main.qml</file>
         <file>MainBackup.qml</file>
         <file>MainForm.ui.qml</file>
+        <file>Operations.ui.qml</file>
         <file>TPEManager.qmlproject</file>
-        <file>Transaction.ui.qml</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>
