@@ -1,12 +1,13 @@
 from sql.tools import db_connection
+from PySide6.QtCore import Slot
 import datetime
 
 
-
 class MainWindowModel:
+    @Slot(str, str, str)
     @staticmethod
     @db_connection
-    def get_operations(cursor, date_debut, date_fin, operation_type="ALL"):
+    def obtenir_operations(cursor, date_debut, date_fin, operation_type="ALL"):
         if operation_type == "ALL":
             cursor.execute("""
                 SELECT *
@@ -26,6 +27,7 @@ class MainWindowModel:
                 """, (date_debut, date_fin, operation_type))
         return cursor.fetchall()
 
+    @Slot(str, str, int, int, float, float, float, float, float, float, float, float)
     @staticmethod
     @db_connection
     def ajouter_operation(cursor,
@@ -42,7 +44,7 @@ class MainWindowModel:
                           solde_avant=0,
                           solde_apres=0,
                           remarque=None):
-        time = datetime.datetime.now().strftime("%H:%M:%S")
+        time = datetime.datetime.now().strftime("%H:%M")
         cursor.execute("""
             INSERT INTO operations (
                 date,
@@ -79,6 +81,7 @@ class MainWindowModel:
             MainWindowModel.remplir_bilan_quotidienne(date, numero_facture)
         return cursor.lastrowid
 
+    @Slot(int, str, str, int, int, float, float, float, float, float, float, float, float)
     @staticmethod
     @db_connection
     def modifier_operation(cursor,
@@ -96,7 +99,7 @@ class MainWindowModel:
                            solde_avant=0,
                            solde_apres=0,
                            remarque=None):
-        time = datetime.datetime.now().strftime("%H:%M:%S")
+        time = datetime.datetime.now().strftime("%H:%M")
         cursor.execute("""
             UPDATE operations
             SET
@@ -136,6 +139,7 @@ class MainWindowModel:
         return cursor.lastrowid
         return cursor.rowcount
 
+    @Slot(str, int)
     @staticmethod
     @db_connection
     def remplir_bilan_quotidienne(cursor, date, numero_facture):
@@ -194,6 +198,7 @@ class MainWindowModel:
                 totals[0]   # montant
             ))
 
+    @Slot(str, str)
     @staticmethod
     @db_connection
     def obtenir_bilan_quotidien(cursor, date_debut, date_fin):
@@ -202,6 +207,7 @@ class MainWindowModel:
                            """,(date_debut, date_fin))
         return cursor.fetchall()
 
+    @Slot(int)
     @staticmethod
     @db_connection
     def supprimer_operation(cursor, operation_id):
@@ -213,6 +219,7 @@ class MainWindowModel:
             """, (operation_id,))
         return cursor.rowcount
 
+    @Slot(float, list, int)
     @staticmethod
     def montant_deductible(montant, ranges, transaction_type):
         if transaction_type:
@@ -227,30 +234,37 @@ class MainWindowModel:
             return montant * 0.02
         return montant * 0.04
 
+    @Slot(float, float)
     @staticmethod
     def montant_verse(montant, montant_deductible):
         return montant - montant_deductible
 
+    @Slot(float, int)
     @staticmethod
     def commission_CMI(montant, transaction_type):
         if transaction_type:
             return montant * 0.01
         return montant * 0.027
 
+    @Slot(float, float)
     @staticmethod
     def benefice(commission_CMI, montant_deductible):
         return montant_deductible - commission_CMI
 
+    @Slot(float, float)
     @staticmethod
     def solde_apres(solde_avant, montant_verse):
         return solde_avant - montant_verse
 
+    @Slot(float, float, int)
     @staticmethod
     def benefice_supplementaire(benefice, commission_CMI, transaction_type):
         if transaction_type:
             return benefice - (commission_CMI * 2)
         return 0
 
+
+    @Slot(str)
     @staticmethod
     @db_connection
     def solde_avant(cursor, date):
@@ -267,6 +281,9 @@ class MainWindowModel:
             return 0
         return row[0] if row[0] is not None else 0
 
+
+
+    @Slot(str)
     @staticmethod
     @db_connection
     def solde_restant(cursor, date):
@@ -283,89 +300,38 @@ class MainWindowModel:
             return 0
         return row[0] if row[0] is not None else 0
 
+
+
+    @Slot(str, str, str)
     @staticmethod
     @db_connection
-    def total_montant_verse(cursor, date_debut, date_fin):
+    def total(cursor, date_debut, date_fin, variable):
         cursor.execute("""
-            SELECT COALESCE(SUM(montant_verse), 0)
+            SELECT COALESCE(SUM(?), 0)
             FROM operations
             WHERE date BETWEEN ? AND ?
               AND operation_type = 'TRANSACTION'
               AND supprime = 0
-            """, (date_debut, date_fin,))
-        return cursor.fetchone()[0]
-
-    @staticmethod
-    @db_connection
-    def total_benefice(cursor, date_debut, date_fin):
-        cursor.execute("""
-            SELECT COALESCE(SUM(benefice), 0)
-            FROM operations
-            WHERE date BETWEEN ? AND ?
-              AND operation_type = 'TRANSACTION'
-              AND supprime = 0
-            """, (date_debut, date_fin,))
-        return cursor.fetchone()[0]
-
-    @staticmethod
-    @db_connection
-    def total_benefice_supplementaire(cursor, date_debut, date_fin):
-        cursor.execute("""
-            SELECT COALESCE(SUM(benefice_supplementaire), 0)
-            FROM operations
-            WHERE date BETWEEN ? AND ?
-              AND operation_type = 'TRANSACTION'
-              AND supprime = 0
-            """, (date_debut, date_fin,))
-        return cursor.fetchone()[0]
-
-    @staticmethod
-    @db_connection
-    def total_commission_CMI(cursor, date_debut, date_fin):
-        cursor.execute("""
-            SELECT COALESCE(SUM(commission_CMI), 0)
-            FROM operations
-            WHERE date BETWEEN ? AND ?
-              AND operation_type = 'TRANSACTION'
-              AND supprime = 0
-            """, (date_debut, date_fin,))
-        return cursor.fetchone()[0]
-
-    @staticmethod
-    @db_connection
-    def total_montant_deductible(cursor, date_debut, date_fin):
-        cursor.execute("""
-            SELECT COALESCE(SUM(montant_deductible), 0)
-            FROM operations
-            WHERE date BETWEEN ? AND ?
-              AND operation_type = 'TRANSACTION'
-              AND supprime = 0
-            """, (date_debut, date_fin,))
-        return cursor.fetchone()[0]
-
-    @staticmethod
-    @db_connection
-    def total_montant(cursor, date_debut, date_fin):
-        cursor.execute("""
-            SELECT COALESCE(SUM(montant), 0)
-            FROM operations
-            WHERE date BETWEEN ? AND ?
-              AND operation_type = 'TRANSACTION'
-              AND supprime = 0
-            """, (date_debut, date_fin,))
+            """, (variable, date_debut, date_fin,))
         return cursor.fetchone()[0]
 
 
-    def export_operations_to_csv(self, operations, file_path):
-        import csv
 
-        with open(file_path, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow([
-                "ID", "Date", "Time", "Operation Type", "Transaction Type",
-                "Invoice Number", "Amount", "Amount Paid", "Deductible Amount",
-                "CMI Commission", "Profit", "Additional Profit",
-                "Balance Before", "Balance After", "Remark"
-            ])
-            for operation in operations:
-                writer.writerow(operation)
+    def export_operations_to_excel(self, operations, file_path):
+        from openpyxl import Workbook
+
+        workbook = Workbook()
+        sheet = workbook.active
+        sheet.title = "Operations"
+
+        sheet.append([
+            "ID", "Date", "Time", "Operation Type", "Transaction Type",
+            "Invoice Number", "Amount", "Amount Paid", "Deductible Amount",
+            "CMI Commission", "Profit", "Additional Profit",
+            "Balance Before", "Balance After", "Remark"
+        ])
+
+        for operation in operations:
+            sheet.append(list(operation))
+
+        workbook.save(file_path)
