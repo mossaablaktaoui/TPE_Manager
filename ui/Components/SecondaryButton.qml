@@ -1,6 +1,8 @@
 import QtQuick
 
 BaseButton {
+    id: root
+
     Theme { id: theme }
     normalColor: theme.surface
     hoverColor: theme.secondaryHover

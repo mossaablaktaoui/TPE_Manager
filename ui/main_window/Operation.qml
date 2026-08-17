@@ -7,26 +7,17 @@ Rectangle {
     height: 600
 
     property var model
-    property alias previousDayButton: operationPage.previousDayButton
-    property alias fromDate: operationPage.fromDate
-    property alias toDate: operationPage.toDate
-    property alias nextDayButton: operationPage.nextDayButton
-    property alias todayButton: operationPage.todayButton
-    property alias filterCombo: operationPage.filterCombo
-    property alias newOperationButton: operationPage.newOperationButton
-    property alias modifyButton: operationPage.modifyButton
-    property alias duplicateButton: operationPage.duplicateButton
-    property alias deleteButton: operationPage.deleteButton
-    property alias operationsTable: operationPage.operationsTable
-    property alias currentBalanceCard: operationPage.currentBalanceCard
-    property alias totalOperationsCard: operationPage.totalOperationsCard
-    property alias totalPaidCard: operationPage.totalPaidCard
-    property alias profitCard: operationPage.profitCard
-    property alias extraProfitCard: operationPage.extraProfitCard
-    signal rowsLoaded(var rows)
+    property var modifyButton: operationPage.modifyButton
+    property var duplicateButton: operationPage.duplicateButton
+    property var deleteButton: operationPage.deleteButton
+    property var operationsTable: operationPage.operationsTable
 
     function formatDateForSql(dateValue) {
-        return Qt.formatDate(dateValue, "yyyy-MM-dd")
+        const jsDate = new Date(dateValue)
+        const year = jsDate.getFullYear()
+        const month = String(jsDate.getMonth() + 1).padStart(2, "0")
+        const day = String(jsDate.getDate()).padStart(2, "0")
+        return year + "-" + month + "-" + day
     }
 
     function formatAmount(value) {
@@ -62,20 +53,44 @@ Rectangle {
         ]
     }
 
+    function selectedOperationType() {
+        switch (operationPage.operationTypeFilter.currentIndex) {
+        case 1:
+            return "TRANSACTION"
+        case 2:
+            return "FOURNITURE"
+        default:
+            return "ALL"
+        }
+    }
+
+    function selectedTransactionType() {
+        switch (operationPage.filterCombo.currentIndex) {
+        case 1:
+            return "NATIONALE"
+        case 2:
+            return "INTERNATIONALE"
+        default:
+            return "ALL"
+        }
+    }
+
     function updateTable() {
         if (!model)
             return
 
+        const dateFrom = formatDateForSql(operationPage.fromDate.date)
+        const dateTo = formatDateForSql(operationPage.toDate.date)
         const rows = model.obtenir_operations(
-            formatDateForSql(operationPage.fromDate.date),
-            formatDateForSql(operationPage.toDate.date),
-            "ALL"
-        )
+            dateFrom,
+            dateTo,
+            selectedOperationType(),
+            selectedTransactionType()
+        ) || []
 
         const formattedRows = rows.map(formatOperationRow)
         operationPage.operationsTable.rows = formattedRows
         operationPage.totalOperationsCard.value = String(rows.length)
-        rowsLoaded(formattedRows)
     }
 
     function shiftDates(days) {
@@ -131,57 +146,31 @@ Rectangle {
         todayButton.onClicked: root.setToday()
     }
 
-    onModelChanged: updateTable()
-
     Connections {
         target: operationPage.fromDate
-
-        function onDateChanged() {
-            root.updateTable()
-        }
+        function onDateChanged() { root.updateTable() }
     }
 
     Connections {
         target: operationPage.toDate
-
-        function onDateChanged() {
-            root.updateTable()
-        }
+        function onDateChanged() { root.updateTable() }
     }
+
+    Connections {
+        target: operationPage.operationTypeFilter
+        function onCurrentIndexChanged() { root.updateTable() }
+    }
+
+    Connections {
+        target: operationPage.filterCombo
+        function onCurrentIndexChanged() { root.updateTable() }
+    }
+
+    onModelChanged: updateTable()
 
     Component.onCompleted: {
-        operationPage.fromDate.date = new Date(2023, 9, 1)
-        operationPage.toDate.date = new Date(2023, 9, 31)
-        updateTable()
+        const today = new Date()
+        operationPage.fromDate.date = new Date(today.getFullYear(), today.getMonth(), 1)
+        operationPage.toDate.date = new Date(today.getFullYear(), today.getMonth() + 1, 0)
     }
 }
-
-
-// here is the api:
-// 
-//     property alias previousDayButton: previousDayButton
-//     property alias fromDate: fromDate
-//     property alias toDate: toDate
-//     property alias nextDayButton: nextDayButton
-//     property alias todayButton: todayButton
-//     property alias filterCombo: comboEntry
-// 
-//     property alias newOperationButton: newOperationButton
-//     property alias modifyButton: modifyButton
-//     property alias duplicateButton: duplicateButton
-//     property alias deleteButton: deleteButton
-// 
-//     property alias operationsTable: operationsTable
-// 
-//     property alias currentBalanceCard: currentBalanceCard
-//     property alias totalOperationsCard: totalOperationsCard
-//     property alias totalPaidCard: totalPaidCard
-//     property alias profitCard: profitCard
-//     property alias extraProfitCard: extraProfitCard
-// 
-//     property var headers: []
-//     property var columnWidths: []
-//     property var rows: []
-//     property int selectedRow: -1
-//     property int rowHeight: theme.rowHeight
-//     property int headerHeight: 40

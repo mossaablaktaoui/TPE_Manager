@@ -1,30 +1,34 @@
 from sql.tools import db_connection
-from PySide6.QtCore import Slot
+from PySide6.QtCore import QObject, Slot
 import datetime
 
 
-class MainWindowModel:
-    @Slot(str, str, str)
-    @staticmethod
+class MainWindowModel(QObject):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    @Slot(str, str, str, str, result="QVariantList")
     @db_connection
-    def obtenir_operations(cursor, date_debut, date_fin, operation_type="ALL"):
-        if operation_type == "ALL":
-            cursor.execute("""
-                SELECT *
-                FROM operations
-                WHERE date BETWEEN ? AND ?
-                  AND supprime = 0
-                ORDER BY date ASC, time ASC, id ASC
-                """, (date_debut, date_fin))
-        else:
-            cursor.execute("""
-                SELECT *
-                FROM operations
-                WHERE date BETWEEN ? AND ?
-                  AND operation_type = ?
-                  AND supprime = 0
-                ORDER BY date ASC, time ASC, id ASC
-                """, (date_debut, date_fin, operation_type))
+    def obtenir_operations(self, cursor, date_debut, date_fin, operation_type="ALL", transaction_type="ALL"):
+        query = """
+            SELECT *
+            FROM operations
+            WHERE date BETWEEN ? AND ?
+              AND supprime = 0
+        """
+        parameters = [date_debut, date_fin]
+
+        if operation_type != "ALL":
+            query += "\n  AND operation_type = ?"
+            parameters.append(operation_type)
+
+        if transaction_type != "ALL":
+            query += "\n  AND transaction_type = ?"
+            parameters.append(transaction_type)
+
+        query += "\nORDER BY date ASC, time ASC, id ASC"
+        cursor.execute(query, parameters)
+
         result = cursor.fetchall()
         return [list(row) for row in result]
 

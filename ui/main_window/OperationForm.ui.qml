@@ -19,6 +19,7 @@ Item {
     property alias toDate: toDate
     property alias nextDayButton: nextDayButton
     property alias todayButton: todayButton
+    property alias operationTypeFilter: typeOperationCombo
     property alias filterCombo: comboEntry
 
     property alias modifyButton: modifyButton
@@ -43,24 +44,38 @@ Item {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillHeight: true
             Layout.fillWidth: true
-            spacing: theme.spacingLg
+            spacing: 5
 
-            RowLayout {
+            GridLayout {
                 Layout.fillWidth: true
-                spacing: theme.spacingSm
+                rows: 2
+                flow: GridLayout.TopToBottom
+                columnSpacing: 0
+                rowSpacing: 5
+
+                Item {
+                }
 
                 SecondaryButton {
                     id: previousDayButton
                     text: ""
+                    bottomPadding: 5
+                    padding: 0
+                    rightPadding: 0
+                    leftPadding: 7
                     iconText: "‹"
                     implicitWidth: 40
+                    bottomRightRadius: 0
+                    topRightRadius: 0
+
                 }
 
                 Text {
-                    text: "Du"
-                    color: theme.textMuted
-                    font.pixelSize: theme.fontSizeSmall
-                }
+                color: theme.textMuted
+                text: "Du"
+                font.pixelSize: theme.fontSizeSmall
+                leftPadding: 5
+            }
 
                 DateEntry {
                     id: fromDate
@@ -70,31 +85,68 @@ Item {
                     text: "Au"
                     color: theme.textMuted
                     font.pixelSize: theme.fontSizeSmall
+                    leftPadding: 5
                 }
 
                 DateEntry {
                     id: toDate
                 }
 
+                Item {
+                    Layout.fillWidth: true
+                    Layout.columnSpan: 3
+                }
+
                 SecondaryButton {
                     id: nextDayButton
-                    text: ""
                     iconText: "›"
+                    text: ""
+                    bottomPadding: 5
+                    padding: 0
+                    rightPadding: 0
+                    leftPadding: 7
                     implicitWidth: 40
+                    bottomLeftRadius: 0
+                    topLeftRadius: 0
                 }
 
                 SecondaryButton {
                     id: todayButton
                     text: "Aujourd'hui"
+                    Layout.leftMargin: 5
                 }
 
                 Item {
                     Layout.fillWidth: true
                 }
 
+                Text {
+                    text: "Type de Operation"
+                    color: theme.textMuted
+                    font.pixelSize: theme.fontSizeSmall
+                    leftPadding: 5
+                    Layout.leftMargin: 5
+                }
+
+                ComboEntry {
+                    id: typeOperationCombo
+                    implicitWidth: 170
+                    Layout.leftMargin: 5
+
+                    model: ["Tous", "Transaction", "Fournitures"]
+                }
+
+                Text {
+                    text: "Type de Transaction"
+                    color: theme.textMuted
+                    font.pixelSize: theme.fontSizeSmall
+                    leftPadding: 5
+                }
+
                 ComboEntry {
                     id: comboEntry
                     implicitWidth: 170
+                    Layout.leftMargin: 5
 
                     model: ["Tous", "National", "International"]
                 }
@@ -113,6 +165,11 @@ Item {
 
                 Item {
                     Layout.fillWidth: true
+                }
+
+                SecondaryButton {
+                    id: exportTableButton
+                    text: "Export Table"
                 }
 
                 SecondaryButton {

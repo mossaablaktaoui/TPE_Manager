@@ -24,8 +24,10 @@ def db_connection(func):
         try:
             connection = sqlite3.connect("sql/bdd.db")
             cursor = connection.cursor()
-
-            result = func(cursor, *args, **kwargs)
+            if args and hasattr(args[0], "__class__") and not isinstance(args[0], (str, int, float, bool, bytes, Path)):
+                result = func(args[0], cursor, *args[1:], **kwargs)
+            else:
+                result = func(cursor, *args, **kwargs)
 
             connection.commit()
             return result

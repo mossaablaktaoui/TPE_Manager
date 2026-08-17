@@ -15,6 +15,10 @@ Button {
     property color borderColor: "transparent"
     property string iconText: ""
     property int buttonHeight: theme.controlHeight
+    property int topLeftRadius: theme.radiusLarge
+    property int topRightRadius: theme.radiusLarge
+    property int bottomLeftRadius: theme.radiusLarge
+    property int bottomRightRadius: theme.radiusLarge
 
     implicitHeight: buttonHeight
     implicitWidth: Math.max(92, contentRow.implicitWidth + 28)
@@ -54,7 +58,13 @@ Button {
     }
 
     background: Rectangle {
-        radius: theme.radius
+        id: back
+        topLeftRadius: control.topLeftRadius
+        topRightRadius: control.topRightRadius
+        bottomLeftRadius: control.bottomLeftRadius
+        bottomRightRadius: control.bottomRightRadius
+
+
         color: {
             if (!control.enabled)
                 return theme.surfaceAlt

@@ -10,6 +10,36 @@ Control {
     property date date: new Date()
     property string format: "dd/MM/yyyy"
 
+    function dateFromText(value) {
+        const parts = value.trim().split("/")
+        if (parts.length !== 3)
+            return null
+
+        const day = Number(parts[0])
+        const month = Number(parts[1])
+        const year = Number(parts[2])
+        if (!Number.isInteger(day) || !Number.isInteger(month)
+                || !Number.isInteger(year) || year < 1000)
+            return null
+
+        const parsed = new Date(year, month - 1, day)
+        if (parsed.getFullYear() !== year
+                || parsed.getMonth() !== month - 1
+                || parsed.getDate() !== day)
+            return null
+
+        return parsed
+    }
+
+    function commitTextDate() {
+        const parsed = dateFromText(field.text)
+        if (parsed === null)
+            return false
+
+        control.date = parsed
+        return true
+    }
+
     implicitHeight: theme.controlHeight
     implicitWidth: 150
 
@@ -21,24 +51,29 @@ Control {
             Layout.fillWidth: true
             Layout.fillHeight: true
             text: Qt.formatDate(control.date, control.format)
-            leftPadding: theme.spacingMd
-            rightPadding: theme.spacingSm
+            leftPadding: 16
+            rightPadding: 16
+            topPadding: 5
+            bottomPadding: 5
             font.pixelSize: theme.fontSize
             color: theme.text
             selectByMouse: true
+            inputMethodHints: Qt.ImhDate
 
             background: Rectangle {
                 color: theme.surface
                 border.width: field.activeFocus ? 2 : 1
                 border.color: field.activeFocus ? theme.primary : theme.border
-                radius: theme.radius
+                radius: 0
+            }
+
+            onTextEdited: {
+                if (text.length === 10)
+                    control.commitTextDate()
             }
 
             onEditingFinished: {
-                let parsed = Date.fromLocaleDateString(Qt.locale(), text, control.format)
-                if (!isNaN(parsed.getTime()))
-                    control.date = parsed
-                else
+                if (!control.commitTextDate())
                     text = Qt.formatDate(control.date, control.format)
             }
         }
@@ -47,16 +82,27 @@ Control {
             id: calendarButton
             Layout.preferredWidth: theme.controlHeight
             Layout.fillHeight: true
-            text: "◫"
-            font.pixelSize: 15
+
+            padding: 10
+
+            // Explicitly target the built-in icon sizing mechanics
+            icon.source: "../assets/icons/calendar.svg"
+            icon.width: 100
+            icon.height: 100
+
             onClicked: popup.open()
 
-            contentItem: Text {
-                text: calendarButton.text
-                color: theme.textMuted
-                font: calendarButton.font
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+            // FIXED: Swapped Text out for a universally supported Image component.
+            // This allows it to work out of the box in QML Preview and C++ compiled runtimes.
+            contentItem: Image {
+                source: calendarButton.icon.source
+                sourceSize.width: calendarButton.icon.width
+                sourceSize.height: calendarButton.icon.height
+
+                // Ensures the SVG doesn't distort or break layout boxes
+                fillMode: Image.PreserveAspectFit
+                horizontalAlignment: Image.AlignHCenter
+                verticalAlignment: Image.AlignVCenter
             }
 
             background: Rectangle {
@@ -65,9 +111,10 @@ Control {
                       : theme.surface
                 border.width: 1
                 border.color: theme.border
-                radius: theme.radius
+                radius: 0
             }
         }
+
     }
 
     Popup {
@@ -149,7 +196,6 @@ Control {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             control.date = model.date
-                            field.text = Qt.formatDate(control.date, control.format)
                             popup.close()
                         }
                     }
@@ -157,4 +203,11 @@ Control {
             }
         }
     }
+
+    onDateChanged: {
+        field.text = Qt.formatDate(control.date, control.format)
+        calendar.month = control.date.getMonth()
+        calendar.year = control.date.getFullYear()
+    }
+
 }

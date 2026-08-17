@@ -11,28 +11,10 @@ Item {
 
     property alias operationPage: operationPage
 
-    property alias newOperationButton: operationPage.newOperationButton
     property alias modifyButton: operationPage.modifyButton
     property alias duplicateButton: operationPage.duplicateButton
     property alias deleteButton: operationPage.deleteButton
     property alias operationsTable: operationPage.operationsTable
-
-    property alias editorTitle: editorTitle
-    property alias dateTimeField: dateTimeField
-    property alias operationType: operationType
-    property alias transactionTypeLabel: transactionTypeLabel
-    property alias transactionType: transactionType
-    property alias amountField: amountField
-    property alias paidField: paidField
-    property alias deductibleField: deductibleField
-    property alias commissionField: commissionField
-    property alias profitField: profitField
-    property alias extraProfitField: extraProfitField
-    property alias beforeField: beforeField
-    property alias afterField: afterField
-    property alias noteField: noteField
-    property alias cancelButton: cancelButton
-    property alias saveButton: saveButton
 
     Theme {
         id: theme
