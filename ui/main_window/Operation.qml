@@ -13,6 +13,7 @@ Rectangle {
     property var operationsTable: operationPage.operationsTable
     property var operationRowsById: ({})
     property int editingOperationId: 0
+    property string editingOperationTime: ""
 
     function formatDateForSql(dateValue) {
         const jsDate = new Date(dateValue)
@@ -57,28 +58,8 @@ Rectangle {
         ]
     }
 
-    function setEditorTime(time) {
-        const parts = String(time || "00:00:00").split(":")
-        const hour = Number(parts[0])
-        const minute = Number(parts[1])
-        const second = Number(parts[2])
-        operationPage.hourField.currentIndex = hour >= 0 && hour < 24 ? hour : 0
-        operationPage.minuteField.currentIndex = minute >= 0 && minute < 60 ? minute : 0
-        operationPage.secondField.currentIndex = second >= 0 && second < 60 ? second : 0
-    }
-
-    function formatEditorDate(date) {
-        const parts = String(date).split("-")
-        if (parts.length !== 3)
-            return ""
-        return parts[2] + "/" + parts[1] + "/" + parts[0]
-    }
-
-    function currentEditorDate() {
-        const now = new Date()
-        return String(now.getDate()).padStart(2, "0") + "/"
-                + String(now.getMonth() + 1).padStart(2, "0") + "/"
-                + now.getFullYear()
+    function currentTimeString() {
+        return Qt.formatTime(new Date(), "HH:mm:ss")
     }
 
     function editorSqlDateTime() {
@@ -86,9 +67,10 @@ Rectangle {
         if (!(date instanceof Date) || isNaN(date.getTime()))
             return ""
 
-        return formatDateForSql(date) + " " + operationPage.hourField.currentText
-                + ":" + operationPage.minuteField.currentText
-                + ":" + operationPage.secondField.currentText
+        const time = editingOperationId > 0 && editingOperationTime.length > 0
+                ? editingOperationTime
+                : currentTimeString()
+        return formatDateForSql(date) + " " + time
     }
 
     function numberFromText(value) {
@@ -133,9 +115,9 @@ Rectangle {
 
     function resetEditor() {
         editingOperationId = 0
+        editingOperationTime = ""
         operationPage.editorTitle.text = "Créer une nouvelle opération"
         operationPage.dateField.date = new Date()
-        setEditorTime(Qt.formatTime(new Date(), "HH:mm:ss"))
         operationPage.factureField.text = ""
         operationPage.operationType.currentIndex = 0
         operationPage.transactionType.currentIndex = 0
@@ -158,9 +140,9 @@ Rectangle {
             return
 
         editingOperationId = operationId
+        editingOperationTime = row[2] || ""
         operationPage.editorTitle.text = "Modifier l'opération"
         operationPage.dateField.date = new Date(row[1] + "T00:00:00")
-        setEditorTime(row[2])
         operationPage.factureField.text = row[5] === null ? "" : String(row[5])
         operationPage.operationType.currentIndex = row[3] === "FOURNITURE" ? 1 : 0
         operationPage.transactionType.currentIndex = row[4] === "INTERNATIONALE" ? 1 : 0

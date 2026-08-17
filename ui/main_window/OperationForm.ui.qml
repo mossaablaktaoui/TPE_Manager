@@ -36,9 +36,6 @@ Item {
 
     property alias editorTitle: editorTitle
     property alias dateField: dateField
-    property alias hourField: hourField
-    property alias minuteField: minuteField
-    property alias secondField: secondField
     property alias factureLabel: factureLabel
     property alias factureField: factureField
     property alias operationType: operationType
