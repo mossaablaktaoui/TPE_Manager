@@ -10,6 +10,9 @@ from ui.main_window.model import MainWindowModel
 
 def main():
     app = QGuiApplication(sys.argv)
+    app.setOrganizationName("TPEManager")
+    app.setOrganizationDomain("local.tpemanager")
+    app.setApplicationName("TPE Manager")
     engine = QQmlApplicationEngine()
     qml_file = Path(__file__).parent / "ui/main_window/Main.qml"
     engine.load(QUrl.fromLocalFile(qml_file))
@@ -18,7 +21,8 @@ def main():
         raise RuntimeError(f"Failed to load QML root object: {qml_file}")
 
     root = engine.rootObjects()[0]
-    root.setProperty("model", MainWindowModel())
+    model = MainWindowModel(root)
+    root.setProperty("model", model)
 
     sys.exit(app.exec())
 

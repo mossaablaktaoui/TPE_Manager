@@ -34,6 +34,33 @@ Item {
     property alias profitCard: profitCard
     property alias extraProfitCard: extraProfitCard
 
+    property alias editorTitle: editorTitle
+    property alias dateField: dateField
+    property alias hourField: hourField
+    property alias minuteField: minuteField
+    property alias secondField: secondField
+    property alias factureLabel: factureLabel
+    property alias factureField: factureField
+    property alias operationType: operationType
+    property alias transactionTypeLabel: transactionTypeLabel
+    property alias transactionType: transactionType
+    property alias amountField: amountField
+    property alias paidLabel: paidLabel
+    property alias paidField: paidField
+    property alias deductibleLabel: deductibleLabel
+    property alias deductibleField: deductibleField
+    property alias commissionLabel: commissionLabel
+    property alias commissionField: commissionField
+    property alias profitLabel: profitLabel
+    property alias profitField: profitField
+    property alias extraProfitLabel: extraProfitLabel
+    property alias extraProfitField: extraProfitField
+    property alias beforeField: beforeField
+    property alias afterField: afterField
+    property alias noteField: noteField
+    property alias cancelButton: cancelButton
+    property alias saveButton: saveButton
+
     RowLayout {
         anchors.fill: parent
         spacing: 0
@@ -277,7 +304,7 @@ Item {
                         anchors.left: parent.left
                         anchors.leftMargin: 20
                         anchors.verticalCenter: parent.verticalCenter
-                        text: "Créer ou Modifier l'opération"
+                        text: "Créer une nouvelle opération"
                         color: theme.text
                         font.pixelSize: theme.fontSizeLg
                         font.weight: theme.fontWeightSemibold
@@ -315,23 +342,23 @@ Item {
                             rowSpacing: 7
 
                             Text {
-                                text: "Date et heure"
+                                text: "Date"
                                 color: theme.textMuted
                                 font.pixelSize: theme.fontSizeSmall
                                 font.weight: theme.fontWeightMedium
                             }
 
                             Text {
-                                text: "Facture N"
+                                id: factureLabel
+                                text: "N° de facture"
                                 color: theme.textMuted
                                 font.pixelSize: theme.fontSizeSmall
                                 font.weight: theme.fontWeightMedium
                             }
 
-                            Entry {
-                                id: dateTimeField
+                            DateEntry {
+                                id: dateField
                                 Layout.fillWidth: true
-                                placeholderText: "24/10/23 14:30"
                             }
 
                             Entry {
@@ -381,6 +408,7 @@ Item {
                             }
 
                             Text {
+                                id: paidLabel
                                 text: "Montant versé"
                                 color: theme.textMuted
                                 font.pixelSize: theme.fontSizeSmall
@@ -398,12 +426,14 @@ Item {
                             }
 
                             Text {
+                                id: deductibleLabel
                                 text: "Montant déductible"
                                 color: theme.textMuted
                                 font.pixelSize: theme.fontSizeSmall
                             }
 
                             Text {
+                                id: commissionLabel
                                 text: "Commission CMI"
                                 color: theme.textMuted
                                 font.pixelSize: theme.fontSizeSmall
@@ -421,12 +451,14 @@ Item {
                             }
 
                             Text {
+                                id: profitLabel
                                 text: "Bénéfice"
                                 color: theme.textMuted
                                 font.pixelSize: theme.fontSizeSmall
                             }
 
                             Text {
+                                id: extraProfitLabel
                                 text: "Bénéfice supplémentaire"
                                 color: theme.textMuted
                                 font.pixelSize: theme.fontSizeSmall

@@ -34,10 +34,9 @@ class MainWindowModel(QObject):
 
 
 
-    @Slot(str, str, int, int, float, float, float, float, float, float, float, float)
-    @staticmethod
+    @Slot(str, str, str, int, float, float, float, float, float, float, float, float, str, result=int)
     @db_connection
-    def ajouter_operation(cursor,
+    def ajouter_operation(self, cursor,
                           date,
                           operation_type,
                           transaction_type=None,
@@ -51,7 +50,10 @@ class MainWindowModel(QObject):
                           solde_avant=0,
                           solde_apres=0,
                           remarque=None):
-        time = datetime.datetime.now().strftime("%H:%M")
+        date, time = self._normaliser_date_heure(date)
+        if operation_type == "FOURNITURE":
+            transaction_type = None
+            numero_facture = None
         cursor.execute("""
             INSERT INTO operations (
                 date,
@@ -84,14 +86,11 @@ class MainWindowModel(QObject):
                   solde_avant,
                   solde_apres,
                   remarque))
-        if operation_type == 0:
-            MainWindowModel.remplir_bilan_quotidienne(date, numero_facture)
         return cursor.lastrowid
 
-    @Slot(int, str, str, int, int, float, float, float, float, float, float, float, float)
-    @staticmethod
+    @Slot(int, str, str, str, int, float, float, float, float, float, float, float, float, str, result=int)
     @db_connection
-    def modifier_operation(cursor,
+    def modifier_operation(self, cursor,
                            operation_id,
                            date,
                            operation_type,
@@ -106,7 +105,10 @@ class MainWindowModel(QObject):
                            solde_avant=0,
                            solde_apres=0,
                            remarque=None):
-        time = datetime.datetime.now().strftime("%H:%M")
+        date, time = self._normaliser_date_heure(date)
+        if operation_type == "FOURNITURE":
+            transaction_type = None
+            numero_facture = None
         cursor.execute("""
             UPDATE operations
             SET
@@ -141,9 +143,19 @@ class MainWindowModel(QObject):
                   solde_apres,
                   remarque,
                   operation_id))
-        if operation_type == 0:
-            MainWindowModel.remplir_bilan_quotidienne(date, numero_facture)
         return cursor.rowcount
+
+    @staticmethod
+    def _normaliser_date_heure(value):
+        parts = str(value).strip().split(maxsplit=1)
+        date = parts[0]
+        if len(parts) == 2:
+            time = parts[1]
+            if len(time) == 5:
+                time += ":00"
+        else:
+            time = datetime.datetime.now().strftime("%H:%M:%S")
+        return date, time
 
     @Slot(str, int)
     @staticmethod
@@ -214,10 +226,9 @@ class MainWindowModel(QObject):
         result = cursor.fetchall()
         return [list(row) for row in result]
 
-    @Slot(int)
-    @staticmethod
+    @Slot(int, result=int)
     @db_connection
-    def supprimer_operation(cursor, operation_id):
+    def supprimer_operation(self, cursor, operation_id):
         cursor.execute("""
             UPDATE operations
             SET supprime = 1
@@ -225,6 +236,52 @@ class MainWindowModel(QObject):
               AND supprime = 0
             """, (operation_id,))
         return cursor.rowcount
+
+    @Slot(int, result=int)
+    @db_connection
+    def dupliquer_operation(self, cursor, operation_id):
+        now = datetime.datetime.now()
+        cursor.execute("""
+            INSERT INTO operations (
+                date,
+                time,
+                operation_type,
+                transaction_type,
+                numero_facture,
+                montant,
+                montant_verse,
+                montant_deductible,
+                commission_CMI,
+                benefice,
+                benefice_supplementaire,
+                solde_avant,
+                solde_apres,
+                remarque
+            )
+            SELECT
+                ?,
+                ?,
+                operation_type,
+                transaction_type,
+                numero_facture,
+                montant,
+                montant_verse,
+                montant_deductible,
+                commission_CMI,
+                benefice,
+                benefice_supplementaire,
+                solde_avant,
+                solde_apres,
+                remarque
+            FROM operations
+            WHERE id = ?
+              AND supprime = 0
+            """, (
+                now.strftime("%Y-%m-%d"),
+                now.strftime("%H:%M:%S"),
+                operation_id,
+            ))
+        return cursor.lastrowid if cursor.rowcount == 1 else 0
 
     @Slot(float, list, int)
     @staticmethod
@@ -271,10 +328,9 @@ class MainWindowModel(QObject):
         return 0
 
 
-    @Slot(str)
-    @staticmethod
+    @Slot(str, result=float)
     @db_connection
-    def solde_avant(cursor, date):
+    def solde_avant(self, cursor, date):
         cursor.execute("""
             SELECT solde_apres
             FROM operations

@@ -18,6 +18,5 @@
         <file>ui/main_window/MainForm.ui.qml</file>
         <file>ui/main_window/Operation.qml</file>
         <file>ui/main_window/Operation.ui.qml</file>
-        <file>ui/assets/icons/calendar.svg</file>
     </qresource>
 </RCC>

@@ -22,8 +22,8 @@ Rectangle {
     property int rowHeight: theme.rowHeight
     property int headerHeight: 40
     property int footerHeight: 44
-    property int sortColumn: -1
-    property int sortOrder: Qt.AscendingOrder
+    property int sortColumn: 1
+    property int sortOrder: Qt.DescendingOrder
     property int totalContentWidth: {
         let total = 0
         for (let i = 0; i < headers.length; ++i) {
@@ -78,7 +78,7 @@ Rectangle {
     }
 
     function isColumnVisible(columnIndex) {
-        return visibleColumns[columnIndex] !== false
+        return columnIndex < headers.length && visibleColumns[columnIndex] !== false
     }
 
     function visibleColumnCount() {
@@ -282,7 +282,7 @@ Rectangle {
                                         height: table.rowHeight
 
                                         Rectangle {
-                                            visible: index === 1 && table.isColumnVisible(index)
+                                            visible: index === 2 && table.isColumnVisible(index)
                                             anchors.left: parent.left
                                             anchors.leftMargin: 10
                                             anchors.verticalCenter: parent.verticalCenter
@@ -302,7 +302,7 @@ Rectangle {
                                         }
 
                                         Text {
-                                            visible: index !== 1 && table.isColumnVisible(index)
+                                            visible: index !== 2 && table.isColumnVisible(index)
                                             anchors.fill: parent
                                             anchors.leftMargin: 12
                                             anchors.rightMargin: 10
